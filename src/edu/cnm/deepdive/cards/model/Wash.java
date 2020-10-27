@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.stream.Stream;
 
-public class Wash implements Iterable<Card> { // pile
+public abstract class Wash implements Iterable<Card> { // pile
 
   private final List<Card> cards; // method in List thats an iterator
 
-  public Wash() {
+  protected Wash() {
     cards = new ArrayList<>(); // good for accessing arbitrary positions
   }
 
@@ -18,8 +20,12 @@ public class Wash implements Iterable<Card> { // pile
     cards.add(card);
   }
 
-  public Card draw(Card card) {
-    return cards.remove(0);
+  public Card draw() throws NoSuchElementException {
+    try {
+      return cards.remove(0);
+    } catch (IndexOutOfBoundsException e) {
+      throw new NoSuchElementException();
+    }
   }
 
   public void sort() {
@@ -42,6 +48,14 @@ public class Wash implements Iterable<Card> { // pile
 
   public int size() {
     return cards.size();
+  }
+
+  public boolean isEmpty() {
+    return cards.isEmpty();
+  }
+
+  public Stream<Card> stream() { // streams are lazy, not turning into stream yet but into a stream object
+    return cards.stream();
   }
 
   protected List<Card> getCards() { // protected allows subclasses to access as well as package
